@@ -2738,7 +2738,7 @@ class ReportController extends Controller
             $simpanan = $value->deposit->whereIn('deposit_type_id', [1, 2, 3, 4, 5, 6, 8, 9])->sum('balance');
             $toko = $value->penjualan->where('tanggal_jual', '>=', $data['start_date'] . ' 00:00:00')->where('tanggal_jual', '<=', $data['end_date'] . ' 23:59:59')->sum('total_belanja');
             $data['data'][$key]['shu_simpanan'] = 0;
-            if($value->status != 1){
+            if($value->status == 1){
                 $data['data'][$key]['shu_simpanan'] = $total_simpanan > 0 ? $simpanan / $total_simpanan * $shu_simpanan : 0;
             }
             $data['data'][$key]['shu_toko'] = $total_toko > 0 ? $toko / $total_toko * $shu_toko : 0;
@@ -2815,7 +2815,7 @@ class ReportController extends Controller
             $simpanan = $value->deposit->whereIn('deposit_type_id', [1, 2, 3, 4, 5, 6, 8, 9])->sum('balance');
             $toko = $value->penjualan->where('tanggal_jual', '>=', $data['start_date'] . ' 00:00:00')->where('tanggal_jual', '<=', $data['end_date'] . ' 23:59:59')->sum('total_belanja');
             $data['data'][$key]['shu_simpanan'] = 0;
-            if($value->status != 1){
+            if($value->status == 1){
                 $data['data'][$key]['shu_simpanan'] = $total_simpanan > 0 ? $simpanan / $total_simpanan * $shu_simpanan : 0;
             }
             $data['data'][$key]['shu_toko'] = $total_toko > 0 ? $toko / $total_toko * $shu_toko : 0;
@@ -2910,7 +2910,7 @@ class ReportController extends Controller
             $simpanan = $value->deposit->whereIn('deposit_type_id', [1, 2, 3, 4, 5, 6, 8, 9])->sum('balance');
             $toko = $value->penjualan->where('tanggal_jual', '>=', $data['start_date'] . ' 00:00:00')->where('tanggal_jual', '<=', $data['end_date'] . ' 23:59:59')->sum('total_belanja');
             $data['data'][$key]['shu_simpanan'] = 0;
-            if($value->status != 1){
+            if($value->status == 1){
                 $data['data'][$key]['shu_simpanan'] = $total_simpanan > 0 ? $simpanan / $total_simpanan * $shu_simpanan : 0;
             }
             $data['data'][$key]['shu_toko'] = $total_toko > 0 ? $toko / $total_toko * $shu_toko : 0;

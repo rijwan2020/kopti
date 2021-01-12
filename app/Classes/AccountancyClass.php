@@ -34,7 +34,8 @@ class AccountancyClass
     {
         if (!$order) $order = ['code', 'asc'];
         //start query
-        $query = Account::query()->with(['group', 'jurnalTransaksi', 'jurnalPenyesuaian']);
+        // $query = Account::query()->with(['group', 'jurnalTransaksi', 'jurnalPenyesuaian']);
+        $query = Account::query();
         //search by keyword
         if (isset($data['q']) && !empty($data['q'])) {
             $query->where(function ($q) use ($data) {
