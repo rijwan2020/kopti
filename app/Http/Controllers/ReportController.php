@@ -2644,7 +2644,7 @@ class ReportController extends Controller
         // $data['status'] = 1;
         $data['data'] = $this->master->memberList($data, $data['limit']);
         $shu_account = config('config_apps.shu_account');
-        $akun = $this->accountancy->ledger($data);
+        $akun = $this->accountancy->shu($data);
 
         $data['active_menu'] = 'shu';
         $data['breadcrumb'] = [
@@ -2753,7 +2753,7 @@ class ReportController extends Controller
         // $data['status'] = 1;
         $data['data'] = $this->master->memberList($data);
         $shu_account = config('config_apps.shu_account');
-        $akun = $this->accountancy->ledger($data);
+        $akun = $this->accountancy->shu($data);
         if (isset($_GET['tbb_id'])) {
             $tbb = $this->accountancy->closeMonthlyBookGet($_GET['tbb_id']);
             $data['bulan'] = date('m', strtotime($tbb->end_periode));
@@ -2847,7 +2847,7 @@ class ReportController extends Controller
         // $data['status'] = 1;
         $data['data'] = $this->master->memberList($data);
         $shu_account = config('config_apps.shu_account');
-        $akun = $this->accountancy->ledger($data);
+        $akun = $this->accountancy->shu($data);
         if (isset($_GET['tbb_id'])) {
             $tbb = $this->accountancy->closeMonthlyBookGet($_GET['tbb_id']);
             $data['bulan'] = date('m', strtotime($tbb->end_periode));

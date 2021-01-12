@@ -326,108 +326,50 @@ class AccountancyClass
                 $account[$key]['saldo_penyesuaian'] = $account[$key]['saldo_awal'] + $account[$key]['debit'] - $account[$key]['kredit'];
             }
         }
-        // $pendapatan = $beban = $shu = 0;
-        // $pendapatan_awal = $beban_awal = $shu_awal = 0;
-        // foreach($account as $value){
-        //     if($value->code[1] == 4){
-        //         if($value->type == 0){
-        //             $pendapatan_awal -= $value->saldo_awal;
-        //             $pendapatan -= $value->saldo_penyesuaian;
-        //         }else{
-        //             $pendapatan_awal += $value->saldo_awal;
-        //             $pendapatan += $value->saldo_penyesuaian;
-        //         }
-        //     }
-        //     if($value->code[1] == 5){
-        //         if($value->type == 1){
-        //             $beban -= $value->saldo_penyesuaian;
-                    
-        //             $beban_awal -= $value->saldo_awal;
-        //         }else{
-        //             $beban += $value->saldo_penyesuaian;
-        //             $beban_awal += $value->saldo_awal;
-        //         }
-        //     }
-        //     if($value->code == config('config_apps.shu_account')){
-        //         $shu = $value->saldo_penyesuaian;
-        //         $shu_awal = $value->saldo_awal;
-        //     }
-        // }
-        // if(auth()->user()->id == 1){
-        //     dd($account);
-        // }
         return $account;
+    }
+    public function shu($data = [], $tutupbuku_bulanan = false)
+    {
+        $start_periode = config('config_apps.journal_periode_start');
 
-        /*$result = [];
-        if ($data['start_date'] <= $start_periode && $data['end_date'] >= $end_periode) {
-            foreach ($account as $key => $value) {
-                $result[$key]['id'] = $value->id;
-                $result[$key]['code'] = $value->code;
-                $result[$key]['name'] = $value->name;
-                $result[$key]['type'] = $value->type;
-                $result[$key]['group_id'] = $value->group_id;
-                $result[$key]['beginning_balance'] = $value->beginning_balance;
-                $result[$key]['adjusting_balance'] = $value->adjusting_balance;
-                $result[$key]['ending_balance'] = $value->ending_balance;
-                $result[$key]['saldo_tahun_lalu'] = $value->saldo_tahun_lalu;
-            }
-        } elseif ($data['start_date'] <= $start_periode && $data['end_date'] < $end_periode) {
-            foreach ($account as $key => $value) {
-                $result[$key]['id'] = $value->id;
-                $result[$key]['code'] = $value->code;
-                $result[$key]['name'] = $value->name;
-                $result[$key]['type'] = $value->type;
-                $result[$key]['group_id'] = $value->group_id;
-                $result[$key]['beginning_balance'] = $value->beginning_balance;
-                $journal = $this->journalDetailSum([
-                    'account_code' => $value->code,
-                    'start_date' => $data['start_date'],
-                    'end_date' => $data['end_date'],
-                ]);
-                $adjustingJournal = $this->adjustingJournalDetailSum([
-                    'account_code' => $value->code,
-                    'start_date' => $data['start_date'],
-                    'end_date' => $data['end_date'],
-                ]);
-                if ($value->type == 0) {
-                    $result[$key]['adjusting_balance'] = $value->beginning_balance + $adjustingJournal['debit'] - $adjustingJournal['kredit'];
-                    $result[$key]['ending_balance'] = $value->beginning_balance + $journal['debit'] - $journal['kredit'];
-                } else {
-                    $result[$key]['adjusting_balance'] = $value->beginning_balance + $adjustingJournal['kredit'] - $adjustingJournal['debit'];
-                    $result[$key]['ending_balance'] = $value->beginning_balance + $journal['kredit'] - $journal['debit'];
+        $account = $this->accountList(['level' => 3, 'group_id' => $data['group_id'] ?? 'all']);
+
+        foreach ($account as $key => $value) {
+            if($value->code[1] == 4 || $value->code[1] == 5 || $value->code == config('config_apps.shu_account')){
+                $jurnalPenyesuaian = $value->jurnalPenyesuaian->where('close_yearly_book_id', 0)->where('transaction_date', '>=', $data['start_date'] . ' 00:00:00')->where('transaction_date', '<=', $data['end_date'] . ' 23:59:59');
+                if ($tutupbuku_bulanan) {
+                    $jurnalPenyesuaian = $jurnalPenyesuaian->where('close_monthly_book_id', 0);
                 }
-                $result[$key]['saldo_tahun_lalu'] = $value->saldo_tahun_lalu;
-            }
-        } else {
-            foreach ($account as $key => $value) {
-                $result[$key]['id'] = $value->id;
-                $result[$key]['code'] = $value->code;
-                $result[$key]['name'] = $value->name;
-                $result[$key]['type'] = $value->type;
-                $result[$key]['group_id'] = $value->group_id;
-                $result[$key]['beginning_balance'] = 0;
-                $journal = $this->journalDetailSum([
-                    'account_code' => $value->code,
-                    'start_date' => $data['start_date'],
-                    'end_date' => $data['end_date'],
-                ]);
-                $adjustingJournal = $this->adjustingJournalDetailSum([
-                    'account_code' => $value->code,
-                    'start_date' => $data['start_date'],
-                    'end_date' => $data['end_date'],
-                ]);
-                if ($value->type == 0) {
-                    $result[$key]['adjusting_balance'] = $adjustingJournal['debit'] - $adjustingJournal['kredit'];
-                    $result[$key]['ending_balance'] = $journal['debit'] - $journal['kredit'];
-                } else {
-                    $result[$key]['adjusting_balance'] = $adjustingJournal['kredit'] - $adjustingJournal['debit'];
-                    $result[$key]['ending_balance'] = $journal['kredit'] - $journal['debit'];
+                $account[$key]['debit'] = $jurnalPenyesuaian->sum('debit');
+                $account[$key]['kredit'] = $jurnalPenyesuaian->sum('kredit');
+                $account[$key]['saldo_awal'] = $value->beginning_balance;
+                if ($data['start_date'] > $start_periode) {
+                    $jurnal = $value->jurnalPenyesuaian->where('close_yearly_book_id', 0)->where('transaction_date', '<=', date('Y-m-d', strtotime('-1 days', strtotime($data['start_date']))) . ' 23:59:59');
+                    if ($tutupbuku_bulanan) {
+                        $jurnal = $jurnal->where('close_monthly_book_id', 0);
+                    }
+                    if ($value->type) {
+                        $account[$key]['saldo_awal'] += $jurnal->sum('kredit') - $jurnal->sum('debit');
+                    } else {
+                        $account[$key]['saldo_awal'] += $jurnal->sum('debit') - $jurnal->sum('kredit');
+                    }
                 }
-                $result[$key]['saldo_tahun_lalu'] = $value->saldo_tahun_lalu;
+                $jurnalTransaksi = $value->jurnalTransaksi->where('close_yearly_book_id', 0)->where('transaction_date', '>=', $data['start_date'] . ' 00:00:00')->where('transaction_date', '<=', $data['end_date'] . ' 23:59:59');
+                if ($tutupbuku_bulanan) {
+                    $jurnalTransaksi = $jurnalTransaksi->where('close_monthly_book_id', 0);
+                }
+                if ($value->type) {
+                    $account[$key]['saldo_akhir'] = $account[$key]['saldo_awal'] + $jurnalTransaksi->sum('kredit') - $jurnalTransaksi->sum('debit');
+                    $account[$key]['saldo_penyesuaian'] = $account[$key]['saldo_awal'] + $account[$key]['kredit'] - $account[$key]['debit'];
+                } else {
+                    $account[$key]['saldo_akhir'] = $account[$key]['saldo_awal'] + $jurnalTransaksi->sum('debit') - $jurnalTransaksi->sum('kredit');
+                    $account[$key]['saldo_penyesuaian'] = $account[$key]['saldo_awal'] + $account[$key]['debit'] - $account[$key]['kredit'];
+                }
             }
         }
-        return $result;*/
+        return $account;
     }
+
     public function cashflow($data = [])
     {
         $query1 = AdjustingJournalDetail::select('adjusting_journal_id')->where([
