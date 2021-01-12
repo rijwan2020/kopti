@@ -72,6 +72,7 @@
                             <th>Kode Anggota</th>
                             <th>Nama Anggota</th>
                             <th>Wilayah</th>
+                            <th>Status</th>
                             <th>SHU Simpanan (Rp)</th>
                             <th>SHU Toko (Rp)</th>
                             <th>Total (Rp)</th>
@@ -80,6 +81,11 @@
                     <tbody>
                         @php
                             $i = ($data['data']->currentPage() - 1) * $data['data']->perPage();
+                            $status = [
+                                0 => 'Non Anggota',
+                                1 => 'Anggota Aktif',
+                                2 => 'Anggota Keluar'
+                            ];
                         @endphp
                         @foreach ($data['data'] as $value)
                             @php
@@ -90,6 +96,7 @@
                                 <td>{{ $value->code }}</td>
                                 <td>{{ $value->name }}</td>
                                 <td>{{ $value->region->name }}</td>
+                                <td>{{ $status[$value->status] }}</td>
                                 <td>{{ number_format($value->shu_simpanan, 2, ',', '.') }}</td>
                                 <td>{{ number_format($value->shu_toko, 2, ',', '.') }}</td>
                                 <td>{{ number_format($value->shu_toko + $value->shu_simpanan, 2, ',', '.') }}</td>

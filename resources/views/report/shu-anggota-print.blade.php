@@ -23,6 +23,7 @@
                 <th>Kode Anggota</th>
                 <th>Nama Anggota</th>
                 <th>Wilayah</th>
+                <th>Status</th>
                 <th>SHU Simpanan (Rp)</th>
                 <th>SHU Toko (Rp)</th>
                 <th>Jumlah (Rp)</th>
@@ -31,6 +32,11 @@
         <tbody>
             @php
                 $i = 0;
+                $status = [
+                    0 => 'Non Anggota',
+                    1 => 'Anggota Aktif',
+                    2 => 'Anggota Keluar'
+                ];
             @endphp
             @foreach ($data['data'] as $key => $value)
                 @php
@@ -42,6 +48,7 @@
                     <td class="px-1">{{ $value->code }}</td>
                     <td class="px-1">{{ $value->name }}</td>
                     <td class="px-1">{{ $value->region->name }}</td>
+                    <td class="px-1">{{ $status[$value->status] }}</td>
                     <td class="px-1 text-right">{{ number_format($value->shu_simpanan, 2, ',', '.') }}</td>
                     <td class="px-1 text-right">{{ number_format($value->shu_toko, 2, ',', '.') }}</td>
                     <td class="px-1 text-right">{{ number_format($shu, 2, ',', '.') }}</td>

@@ -2824,6 +2824,11 @@ class ReportController extends Controller
 
         $download['data'] = [];
         $i = 1;
+        $status = [
+            0 => 'Non Anggota',
+            1 => 'Anggota Aktif',
+            2 => 'Anggota Keluar'
+        ];
         foreach ($data['data'] as $key => $value) {
             $shu = $value->shu_toko + $value->shu_simpanan;
             $download['data'][$key] = [
@@ -2831,6 +2836,7 @@ class ReportController extends Controller
                 $value->code,
                 $value->name,
                 $value->region->name,
+                $status[$value->status],
                 number_format($value->shu_simpanan, 2, ',', '.'),
                 number_format($value->shu_toko, 2, ',', '.'),
                 number_format($shu, 2, ',', '.'),
