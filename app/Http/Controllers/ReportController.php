@@ -2641,7 +2641,7 @@ class ReportController extends Controller
         $data['end_date'] = $_GET['end_date'] ?? config('config_apps.journal_periode_end');
         $data['q'] = $_GET['q'] ?? '';
         $data['limit'] = $_GET['limit'] ?? 25;
-        $data['status'] = 1;
+        // $data['status'] = 1;
         $data['data'] = $this->master->memberList($data, $data['limit']);
         $shu_account = config('config_apps.shu_account');
         $akun = $this->accountancy->ledger($data);
@@ -2727,7 +2727,7 @@ class ReportController extends Controller
 
         
         $filter_toko = [
-            'shu' => 1,
+            // 'shu' => 1,
             'start_date' => $data['start_date'],
             'end_date' => $data['end_date'],
         ];
@@ -2737,7 +2737,10 @@ class ReportController extends Controller
         foreach ($data['data'] as $key => $value) {
             $simpanan = $value->deposit->whereIn('deposit_type_id', [1, 2, 3, 4, 5, 6, 8, 9])->sum('balance');
             $toko = $value->penjualan->where('tanggal_jual', '>=', $data['start_date'] . ' 00:00:00')->where('tanggal_jual', '<=', $data['end_date'] . ' 23:59:59')->sum('total_belanja');
-            $data['data'][$key]['shu_simpanan'] = $total_simpanan > 0 ? $simpanan / $total_simpanan * $shu_simpanan : 0;
+            $data['data'][$key]['shu_simpanan'] = 0;
+            if($value->status != 1){
+                $data['data'][$key]['shu_simpanan'] = $total_simpanan > 0 ? $simpanan / $total_simpanan * $shu_simpanan : 0;
+            }
             $data['data'][$key]['shu_toko'] = $total_toko > 0 ? $toko / $total_toko * $shu_toko : 0;
         }
         return view('report.shu-anggota', compact('data'));
@@ -2747,7 +2750,7 @@ class ReportController extends Controller
         $data['start_date'] = $_GET['start_date'] ?? config('config_apps.journal_periode_start');
         $data['end_date'] = $_GET['end_date'] ?? config('config_apps.journal_periode_end');
         $data['q'] = $_GET['q'] ?? '';
-        $data['status'] = 1;
+        // $data['status'] = 1;
         $data['data'] = $this->master->memberList($data);
         $shu_account = config('config_apps.shu_account');
         $akun = $this->accountancy->ledger($data);
@@ -2802,7 +2805,7 @@ class ReportController extends Controller
         }
         
         $filter_toko = [
-            'shu' => 1,
+            // 'shu' => 1,
             'start_date' => $data['start_date'],
             'end_date' => $data['end_date'],
         ];
@@ -2811,7 +2814,10 @@ class ReportController extends Controller
         foreach ($data['data'] as $key => $value) {
             $simpanan = $value->deposit->whereIn('deposit_type_id', [1, 2, 3, 4, 5, 6, 8, 9])->sum('balance');
             $toko = $value->penjualan->where('tanggal_jual', '>=', $data['start_date'] . ' 00:00:00')->where('tanggal_jual', '<=', $data['end_date'] . ' 23:59:59')->sum('total_belanja');
-            $data['data'][$key]['shu_simpanan'] = $total_simpanan > 0 ? $simpanan / $total_simpanan * $shu_simpanan : 0;
+            $data['data'][$key]['shu_simpanan'] = 0;
+            if($value->status != 1){
+                $data['data'][$key]['shu_simpanan'] = $total_simpanan > 0 ? $simpanan / $total_simpanan * $shu_simpanan : 0;
+            }
             $data['data'][$key]['shu_toko'] = $total_toko > 0 ? $toko / $total_toko * $shu_toko : 0;
         }
 
@@ -2838,7 +2844,7 @@ class ReportController extends Controller
         $data['start_date'] = $_GET['start_date'] ?? config('config_apps.journal_periode_start');
         $data['end_date'] = $_GET['end_date'] ?? config('config_apps.journal_periode_end');
         $data['q'] = $_GET['q'] ?? '';
-        $data['status'] = 1;
+        // $data['status'] = 1;
         $data['data'] = $this->master->memberList($data);
         $shu_account = config('config_apps.shu_account');
         $akun = $this->accountancy->ledger($data);
@@ -2894,7 +2900,7 @@ class ReportController extends Controller
         }
         
         $filter_toko = [
-            'shu' => 1,
+            // 'shu' => 1,
             'start_date' => $data['start_date'],
             'end_date' => $data['end_date'],
         ];
@@ -2903,7 +2909,10 @@ class ReportController extends Controller
         foreach ($data['data'] as $key => $value) {
             $simpanan = $value->deposit->whereIn('deposit_type_id', [1, 2, 3, 4, 5, 6, 8, 9])->sum('balance');
             $toko = $value->penjualan->where('tanggal_jual', '>=', $data['start_date'] . ' 00:00:00')->where('tanggal_jual', '<=', $data['end_date'] . ' 23:59:59')->sum('total_belanja');
-            $data['data'][$key]['shu_simpanan'] = $total_simpanan > 0 ? $simpanan / $total_simpanan * $shu_simpanan : 0;
+            $data['data'][$key]['shu_simpanan'] = 0;
+            if($value->status != 1){
+                $data['data'][$key]['shu_simpanan'] = $total_simpanan > 0 ? $simpanan / $total_simpanan * $shu_simpanan : 0;
+            }
             $data['data'][$key]['shu_toko'] = $total_toko > 0 ? $toko / $total_toko * $shu_toko : 0;
         }
 
