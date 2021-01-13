@@ -32,6 +32,8 @@ class ReportController extends Controller
         $this->master = new MasterClass();
         $this->deposit = new DepositClass();
         $this->store = new StoreClass();
+        ini_set('memory_limit','1024M');
+        set_time_limit(0);
     }
 
 
@@ -3514,8 +3516,8 @@ class ReportController extends Controller
         $grup_kas = $this->accountancy->accountGroupGet(1);
         $data['adm_keuangan'] = [];
         foreach ($grup_kas->account as $key => $value) {
-            $jurnal = $value->jurnalPenyesuaian->where('transaction_date', '<=', date('Y-m-d', strtotime('-1 day', strtotime($data['date']))) . ' 23:59:59');
-            $jurnalPenyesuaian = $value->jurnalPenyesuaian->where('transaction_date', '>=', $data['date'] . ' 00:00:00')->where('transaction_date', '<=', $data['date'] . ' 23:59:59');
+            $jurnal = $value->jurnalPenyesuaian->where('transaction_date', '<=', date('Y-m-d', strtotime('-1 day', strtotime($data['date']))) . ' 23:59:59')->where('close_yearly_book_id', 0);
+            $jurnalPenyesuaian = $value->jurnalPenyesuaian->where('transaction_date', '>=', $data['date'] . ' 00:00:00')->where('transaction_date', '<=', $data['date'] . ' 23:59:59')->where('close_yearly_book_id', 0);
             if ($value->type) {
                 $saldo_lalu = $value->beginning_balance - $jurnal->sum('debit') + $jurnal->sum('kredit');
                 $penambahan = $jurnalPenyesuaian->sum('kredit');
@@ -3535,6 +3537,7 @@ class ReportController extends Controller
         }
         $data['adm_keuangan'] = collect($data['adm_keuangan']);
 
+        
         // Kewajiban titipan
         $kewajiban_titipan = [];
         foreach ($bukubesar as $key => $value) {
@@ -3629,8 +3632,8 @@ class ReportController extends Controller
         $grup_kas = $this->accountancy->accountGroupGet(1);
         $data['adm_keuangan'] = [];
         foreach ($grup_kas->account as $key => $value) {
-            $jurnal = $value->jurnalPenyesuaian->where('transaction_date', '<=', date('Y-m-d', strtotime('-1 day', strtotime($data['date']))) . ' 23:59:59');
-            $jurnalPenyesuaian = $value->jurnalPenyesuaian->where('transaction_date', '>=', $data['date'] . ' 00:00:00')->where('transaction_date', '<=', $data['date'] . ' 23:59:59');
+            $jurnal = $value->jurnalPenyesuaian->where('transaction_date', '<=', date('Y-m-d', strtotime('-1 day', strtotime($data['date']))) . ' 23:59:59')->where('close_yearly_book_id', 0);
+            $jurnalPenyesuaian = $value->jurnalPenyesuaian->where('transaction_date', '>=', $data['date'] . ' 00:00:00')->where('transaction_date', '<=', $data['date'] . ' 23:59:59')->where('close_yearly_book_id', 0);
             if ($value->type) {
                 $saldo_lalu = $value->beginning_balance - $jurnal->sum('debit') + $jurnal->sum('kredit');
                 $penambahan = $jurnalPenyesuaian->sum('kredit');
@@ -3749,8 +3752,8 @@ class ReportController extends Controller
         $grup_kas = $this->accountancy->accountGroupGet(1);
         $adm_keuangan = [];
         foreach ($grup_kas->account as $key => $value) {
-            $jurnal = $value->jurnalPenyesuaian->where('transaction_date', '<=', date('Y-m-d', strtotime('-1 day', strtotime($date))) . ' 23:59:59');
-            $jurnalPenyesuaian = $value->jurnalPenyesuaian->where('transaction_date', '>=', $date . ' 00:00:00')->where('transaction_date', '<=', $date . ' 23:59:59');
+            $jurnal = $value->jurnalPenyesuaian->where('transaction_date', '<=', date('Y-m-d', strtotime('-1 day', strtotime($date))) . ' 23:59:59')->where('close_yearly_book_id', 0);
+            $jurnalPenyesuaian = $value->jurnalPenyesuaian->where('transaction_date', '>=', $date . ' 00:00:00')->where('transaction_date', '<=', $date . ' 23:59:59')->where('close_yearly_book_id', 0);
             if ($value->type) {
                 $saldo_lalu = $value->beginning_balance - $jurnal->sum('debit') + $jurnal->sum('kredit');
                 $penambahan = $jurnalPenyesuaian->sum('kredit');
@@ -3982,7 +3985,7 @@ class ReportController extends Controller
         $grup_kas = $this->accountancy->accountGroupGet(1);
         $data['saldo_awal'] = 0;
         foreach ($grup_kas->account as $key => $value) {
-            $jurnal = $value->jurnalPenyesuaian->where('transaction_date', '<=', date('Y-m-d', strtotime('-1 day', strtotime($data['date']))) . ' 23:59:59');
+            $jurnal = $value->jurnalPenyesuaian->where('transaction_date', '<=', date('Y-m-d', strtotime('-1 day', strtotime($data['date']))) . ' 23:59:59')->where('close_yearly_book_id', 0);
             if ($value->type) {
                 $saldo_awal = $value->beginning_balance - $jurnal->sum('debit') + $jurnal->sum('kredit');
             } else {
@@ -4010,7 +4013,7 @@ class ReportController extends Controller
         $grup_kas = $this->accountancy->accountGroupGet(1);
         $data['saldo_awal'] = 0;
         foreach ($grup_kas->account as $key => $value) {
-            $jurnal = $value->jurnalPenyesuaian->where('transaction_date', '<=', date('Y-m-d', strtotime('-1 day', strtotime($data['date']))) . ' 23:59:59');
+            $jurnal = $value->jurnalPenyesuaian->where('transaction_date', '<=', date('Y-m-d', strtotime('-1 day', strtotime($data['date']))) . ' 23:59:59')->where('close_yearly_book_id', 0);
             if ($value->type) {
                 $saldo_awal = $value->beginning_balance - $jurnal->sum('debit') + $jurnal->sum('kredit');
             } else {
@@ -4032,7 +4035,7 @@ class ReportController extends Controller
         $grup_kas = $this->accountancy->accountGroupGet(1);
         $saldo_awal = 0;
         foreach ($grup_kas->account as $key => $value) {
-            $jurnal = $value->jurnalPenyesuaian->where('transaction_date', '<=', date('Y-m-d', strtotime('-1 day', strtotime($date))) . ' 23:59:59');
+            $jurnal = $value->jurnalPenyesuaian->where('transaction_date', '<=', date('Y-m-d', strtotime('-1 day', strtotime($date))) . ' 23:59:59')->where('close_yearly_book_id', 0);
             if ($value->type) {
                 $saldoawal = $value->beginning_balance - $jurnal->sum('debit') + $jurnal->sum('kredit');
             } else {
