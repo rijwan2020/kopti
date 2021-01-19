@@ -3,7 +3,7 @@
 	'besar_sp' => '100000',
 	'besar_sw' => '50000',
 	'next_code_anggota' => '607',
-	'next_code_non_anggota' => '713',
+	'next_code_non_anggota' => '714',
 	'journal_periode_start' => '2021-01-01',
 	'journal_periode_end' => '2021-12-31',
 	'akun_pembelian' => '05.01.02',

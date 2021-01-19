@@ -1020,6 +1020,10 @@ class StoreController extends Controller
             return redirect()->route('purchaseDebtList')->with(['warning' => 'Data utang sudah lunas.']);
         }
         $data['cash'] = $this->accountancy->accountList(['group_id' => 1]);
+        // if(isset($_GET['k'])){
+            $data['cash'][] = $this->accountancy->accountGet(['code', '01.01.45']);
+            // dd($data['cash']);
+        // }
         $data['active_menu'] = 'purchase';
         $data['breadcrumb'] = [
             'Toko' => route('store'),
