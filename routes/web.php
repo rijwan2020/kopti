@@ -11,6 +11,7 @@
 |
 */
 
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -36,19 +37,21 @@ Route::group(["prefix" => "profile"], function () {
 * ======================================================================================== DATA MASTER ========================================================================================
 */
 // ------------------------------------------------------------------------------------- PROFILE KOPERASI -------------------------------------------------------------------------------------
-Route::get('/koperasi', 'MasterController@koperasi')->name('koperasi');
-Route::post('/koperasi/update', 'MasterController@koperasiUpdate')->name('koperasiUpdate');
+Route::get('/koperasi', 'KoperasiController@index')->name('koperasi');
+Route::post('/koperasi/update', 'KoperasiController@update')->name('koperasiUpdate');
 // ------------------------------------------------------------------------------------- DATA ANGGOTA -------------------------------------------------------------------------------------
 Route::group(["prefix" => "anggota"], function () {
-    Route::get('/', 'MasterController@memberList')->name('memberList');
-    Route::get('/tambah', 'MasterController@memberAdd')->name('memberAdd');
-    Route::post('/simpan', 'MasterController@memberSave')->name('memberSave');
-    Route::get('/edit/{id}', 'MasterController@memberEdit')->name('memberEdit');
-    Route::get('/hapus/{id}', 'MasterController@memberDelete')->name('memberDelete');
-    Route::get('/cetak', 'MasterController@memberPrint')->name('memberPrint');
-    Route::get('/download', 'MasterController@memberDownload')->name('memberDownload');
-    Route::get('/detail/{id}', 'MasterController@memberDetail')->name('memberDetail');
+    Route::get('/', 'AnggotaController@index')->name('memberList');
+    Route::get('/tambah', 'AnggotaController@create')->name('memberAdd');
+    Route::post('/simpan', 'AnggotaController@save')->name('memberSave');
+    Route::get('/edit/{id}', 'AnggotaController@edit')->name('memberEdit');
+    Route::get('/cetak', 'AnggotaController@print')->name('memberPrint');
+    Route::get('/download', 'AnggotaController@download')->name('memberDownload');
+    Route::get('/detail/{id}', 'AnggotaController@view')->name('memberDetail');
     Route::get('/transaksi/{id}', 'MasterController@memberTransaksi')->name('memberTransaksi');
+
+    Route::get('/hapus/{id}', 'MasterController@memberDelete')->name('memberDelete');
+    
     Route::get('/upload', 'MasterController@memberUpload')->name('memberUpload');
     Route::post('/upload/simpan', 'MasterController@memberUploadSave')->name('memberUploadSave');
     Route::get('/promosi/{id}', 'MasterController@memberPromotion')->name('memberPromotion');
@@ -59,11 +62,12 @@ Route::group(["prefix" => "anggota"], function () {
 });
 // ------------------------------------------------------------------------------------- DATA PENGURUS -------------------------------------------------------------------------------------
 Route::group(["prefix" => "pengurus"], function () {
-    Route::get('/', 'MasterController@managementList')->name('managementList');
-    Route::get('/tambah', 'MasterController@managementAdd')->name('managementAdd');
-    Route::get('/edit/{id}', 'MasterController@managementEdit')->name('managementEdit');
+    Route::get('/', 'PengurusController@index')->name('managementList');
+    Route::get('/tambah', 'PengurusController@create')->name('managementAdd');
+    Route::get('/edit/{id}', 'PengurusController@edit')->name('managementEdit');
+    Route::get('/hapus/{id}', 'PengurusController@delete')->name('managementDelete');
+    
     Route::post('/simpan', 'MasterController@managementSave')->name('managementSave');
-    Route::get('/hapus/{id}', 'MasterController@managementDelete')->name('managementDelete');
     // ------------------------------------------------------------------------------------- DATA JABATAN PENGURUS -------------------------------------------------------------------------------------
     Route::group(["prefix" => "/jabatan"], function () {
         Route::get('/', 'MasterController@managementPositionList')->name('managementPositionList');
@@ -91,11 +95,11 @@ Route::group(["prefix" => "karyawan"], function () {
 });
 // ------------------------------------------------------------------------------------- DATA WILAYAH -------------------------------------------------------------------------------------
 Route::group(['prefix' => 'wilayah'], function () {
-    Route::get('/', 'MasterController@regionList')->name('regionList');
-    Route::get('/tambah', 'MasterController@regionAdd')->name('regionAdd');
-    Route::get('/edit/{id}', 'MasterController@regionEdit')->name('regionEdit');
-    Route::post('/simpan', 'MasterController@regionSave')->name('regionSave');
-    Route::get('/hapus/{id}', 'MasterController@regionDelete')->name('regionDelete');
+    Route::get('/', 'WilayahController@index')->name('regionList');
+    Route::get('/tambah', 'WilayahController@create')->name('regionAdd');
+    Route::get('/edit/{id}', 'WilayahController@edit')->name('regionEdit');
+    Route::get('/hapus/{id}', 'WilayahController@delete')->name('regionDelete');
+    Route::post('/simpan', 'WilayahController@save')->name('regionSave');
 });
 // ------------------------------------------------------------------------------------- ASET BARANG -------------------------------------------------------------------------------------
 Route::group(['prefix' => 'aset'], function () {

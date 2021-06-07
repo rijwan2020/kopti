@@ -2,7 +2,7 @@
  return [
 	'besar_sp' => '100000',
 	'besar_sw' => '50000',
-	'next_code_anggota' => '609',
+	'next_code_anggota' => '610',
 	'next_code_non_anggota' => '741',
 	'journal_periode_start' => '2021-01-01',
 	'journal_periode_end' => '2021-12-31',

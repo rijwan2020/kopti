@@ -38,7 +38,7 @@
                         <label class="form-label">Pilih Jabatan *</label>
                         <select class="form-control select2 {{ $errors->has('position_id')?' is-invalid':'' }}" name="position_id">
                             @foreach ($data['position'] as $value)
-                                <option value="{{$value->id}}" {{$value->id==old('position_id')?'selected':''}}>{{$value->name}}</option>
+                                <option value="{{$value->id}}" {{ $value->id==old('position_id') || ($data['mode'] == 'edit' && $data['data']->position_id == $value->id) ?'selected':''}}>{{$value->name}}</option>
                             @endforeach
                         </select>
                         {!! $errors->first('position_id', '<small class="form-text text-danger">:message</small>') !!}

@@ -110,104 +110,6 @@ class MasterController extends Controller
     /*
     * ========================================================================================== START DATA MEMBER ==========================================================================================
     */
-    public function memberList()
-    {
-        $data['q'] = $_GET['q'] ?? '';
-        $data['limit'] = $_GET['limit'] ?? 25;
-        $data['region_id'] = $_GET['region_id'] ?? 'all';
-        $data['status'] = $_GET['status'] ?? '1';
-
-        $data['data'] = $this->master->memberList($data, $data['limit']);
-        $data['region'] = $this->master->regionList();
-        $data['active_menu'] = 'member';
-        $data['breadcrumb'] = [
-            'Data Anggota' => url()->current()
-        ];
-        return view('master.member-list', compact('data'));
-    }
-    public function memberAdd()
-    {
-        $data['mode'] = 'add';
-        $data['region'] = $this->master->regionList();
-        $data['active_menu'] = 'member';
-        $data['breadcrumb'] = [
-            'Data Anggota' => route('memberList'),
-            'Tambah' => url()->current()
-        ];
-        return view('master.member-form', compact('data'));
-    }
-    public function memberEdit($id)
-    {
-        $data['data'] = $this->master->memberGet($id);
-        $data['mode'] = 'edit';
-        $data['region'] = $this->master->regionList();
-        $data['active_menu'] = 'member';
-        $data['breadcrumb'] = [
-            'Data Anggota' => route('memberList'),
-            'Edit : ' . $data['data']->name => url()->current()
-        ];
-        return view('master.member-form', compact('data'));
-    }
-    public function memberSave(MemberRequest $request)
-    {
-        $data = $request->validated();
-        if (isset($data['village_id'])) {
-            //get data desa/kelurahan
-            $village = $this->area->villageGet($data['village_id']);
-            $data['district_id'] = $village->district_id;
-            $data['regency_id'] = $village->regency_id;
-            $data['province_id'] = $village->province_id;
-        }
-        if ($request->has('image')) {
-            //upload new image to storage/app/public/anggota/image
-            $data['image'] = $request->file('image')->store('anggota/image');
-        }
-        if (isset($data['income'])) {
-            $data['income'] = str_replace(',', '', $data['income']);
-        }
-        if ($request->mode == 'add') {
-            // save member type
-            if (!$this->master->memberSave($data)) {
-                if (isset($data['image']) && !empty($data['image'])) {
-                    Storage::delete($data['image']);
-                }
-                return back()->with(['warning' => $this->master->error])->withInput();
-            }
-            $config = "<?php \n return [\n";
-            foreach (config('config_apps') as $key => $value) {
-                if ($data['status'] == 1) {
-                    if ($key == 'next_code_anggota') {
-                        $value++;
-                    }
-                } else {
-                    if ($key == 'next_code_non_anggota') {
-                        $value++;
-                    }
-                }
-                $config .= "\t'{$key}' => '{$value}',\n";
-            }
-            $config .= " ]; ";
-            $file = config_path() . '/config_apps.php';
-            file_put_contents($file, $config);
-            $message = 'Data anggota berhasil ditambahkan.';
-        } else {
-            $data['username'] = $request->username;
-            $data['password'] = $request->password;
-            $member = $this->master->memberGet($request->id);
-            // update member type
-            if (!$this->master->memberUpdate($request->id, $data)) {
-                if (isset($data['image']) && !empty($data['image'])) {
-                    Storage::delete($data['image']);
-                }
-                return back()->with(['warning' => $this->master->error])->withInput();
-            }
-            if (isset($data['image']) && !empty($data['image'])) {
-                Storage::delete($member->image);
-            }
-            $message = 'Data anggota berhasil diperbaharui.';
-        }
-        return redirect()->route('memberList', ['status' => 'all'])->with(['success' => $message]);
-    }
     public function memberDelete($id)
     {
         $member = $this->master->memberGet($id);
@@ -250,34 +152,6 @@ class MasterController extends Controller
         $user->email = base64_encode($user->email);
         $user->update();
         return redirect()->route('memberList')->with(['success' => 'Data anggota berhasil dihapus.']);
-    }
-    public function memberPrint()
-    {
-        $data['q'] = $_GET['q'] ?? '';
-        $data['region_id'] = $_GET['region_id'] ?? 'all';
-        $data['status'] = $_GET['status'] ?? '1';
-
-        $data['data'] = $this->master->memberList($data);
-        $data['region'] = $this->master->regionList();
-        return view('master.member-print', compact('data'));
-    }
-    protected function memberDownload()
-    {
-        ini_set('memory_limit', '-1');
-        $data['q'] = $_GET['q'] ?? '';
-        $data['status'] = $_GET['status'] ?? 'all';
-        $data['region_id'] = $_GET['region_id'] ?? 'all';
-        return Excel::download(new MemberExport($data), 'Data Anggota.xlsx');
-    }
-    public function memberDetail($id)
-    {
-        $data['data'] = $this->master->memberGet($id);
-        $data['active_menu'] = 'member';
-        $data['breadcrumb'] = [
-            'Data Anggota' => route('memberList'),
-            $data['data']->name => url()->current()
-        ];
-        return view('master.member-detail', compact('data'));
     }
     public function memberTransaksi($id)
     {
@@ -446,138 +320,9 @@ class MasterController extends Controller
     */
 
 
-
-    /*
-    * ========================================================================================== START REGION ==========================================================================================
-    */
-    public function regionList()
-    {
-        $data['q'] = $_GET['q'] ?? '';
-        $data['limit'] = $_GET['limit'] ?? 25;
-        $data['data'] = $this->master->regionList($data, $data['limit']);
-        $data['active_menu'] = 'region';
-        $data['breadcrumb'] = [
-            'Data Wilayah' => url()->current()
-        ];
-        return view('master.region-list', compact('data'));
-    }
-    public function regionAdd()
-    {
-        $data['mode'] = 'add';
-        $data['active_menu'] = 'region';
-        $data['breadcrumb'] = [
-            'Data Wilayah' => route('regionList'),
-            'Tambah' => url()->current()
-        ];
-        return view('master.region-form', compact('data'));
-    }
-    protected function regionEdit($id)
-    {
-        //get this user
-        $data['data'] = $this->master->regionGet($id);
-        if (!$data['data']) {
-            return redirect()->route('regionList')->with(['warning' => 'Data wilayah tidak ditemukan.']);
-        }
-        //this mode
-        $data['mode'] = 'edit';
-        //active menu
-        $data['active_menu'] = 'region';
-        $data['breadcrumb'] = [
-            'Data Wilayah' => route('regionList'),
-            'Edit: ' . $data['data']->name => url()->current()
-        ];
-        return view('master.region-form', compact('data'));
-    }
-    protected function regionSave(Request $request)
-    {
-        //validate request data
-        $data = $request->validate([
-            'name' => 'required',
-            'code' => 'required',
-            'description' => 'nullable'
-        ]);
-        //if mode input is add
-        if ($request->mode == 'add') {
-            //save region
-            if (!$this->master->regionSave($data)) {
-                return back()->with(['warning' => $this->master->error]);
-            }
-            $message = 'Data wilayah berhasil di tambahkan';
-        } else {
-            //update refion
-            if (!$this->master->regionUpdate($request->id, $data)) {
-                return back()->with(['warning' => $this->master->error]);
-            }
-            $message = 'Data wilayah berhasil diperbaharui.';
-        }
-        return redirect()->route('regionList')->with(['success' => $message]);
-    }
-    public function regionDelete($id)
-    {
-        $region = $this->master->regionGet($id);
-        //if region not found
-        if ($region == false) {
-            return redirect()->route('regionList')->with(['warning' => 'Data wilayah tidak ditemukan.']);
-        }
-        // check members with this region
-        if ($this->master->memberList(['region_id' => $id])->count() > 0) {
-            return redirect()->route('regionList')->with(['warning' => 'Data wilayah tidak dapat dihapus karena sedang digunakan.']);
-        }
-        //delete region
-        $region->deleted_by = auth()->user()->id ?? 1;
-        $region->update();
-        $region->delete();
-        return redirect()->route('regionList')->with(['success' => 'Data wilayah berhasil dihapus.']);
-    }
-    /*
-    * ========================================================================================== END REGION ==========================================================================================
-    */
-
-
-
     /*
     * ========================================================================================== START MANAGEMENT ==========================================================================================
     */
-    public function managementList()
-    {
-        $data['q'] = $_GET['q'] ?? '';
-        $data['limit'] = $_GET['limit'] ?? 25;
-        $data['position_id'] = $_GET['position_id'] ?? 'all';
-        $data['data'] = $this->master->managementList($data, $data['limit']);
-        $data['position'] = $this->master->positionList(['type' => 0]);
-        $data['active_menu'] = 'management';
-        $data['breadcrumb'] = [
-            'Data Pengurus' => url()->current()
-        ];
-        return view('master.management-list', compact('data'));
-    }
-    public function managementAdd()
-    {
-        $data['mode'] = 'add';
-        $data['member'] = $this->master->memberList(['status' => 1]);
-        $data['position'] = $this->master->positionList(['type' => 0]);
-        $data['active_menu'] = 'management';
-        $data['breadcrumb'] = [
-            'Data Pengurus' => route('managementList'),
-            'Tambah' => url()->current(),
-        ];
-        return view('master.management-form', compact('data'));
-    }
-    public function managementEdit($id)
-    {
-        $data['data'] = $this->master->managementGet($id);
-        if (!$data['data']) {
-            return redirect()->route('managementList')->with(['warning' => 'Data pengurus tidak ditemukan.']);
-        }
-        $data['mode'] = 'edit';
-        $data['position'] = $this->master->positionList(['type' => 0]);
-        $data['active_menu'] = 'management';
-        $data['breadcrumb'] = [
-            'Data Pengurus' => route('managementList'),
-            'Edit: ' . $data['data']->member->name => url()->current(),
-        ];
-        return view('master.management-form', compact('data'));
-    }
     public function managementSave(Request $request)
     {
         $data = $request->validate([
@@ -600,24 +345,6 @@ class MasterController extends Controller
             $message = 'Data pengurus berhasil diperbaharui.';
         }
         return redirect()->route('managementList')->with(['success' => $message]);
-    }
-    public function managementDelete($id)
-    {
-        $management = $this->master->managementGet($id);
-        //if management not exist
-        if ($management == false) {
-            return redirect()->route('managementList')->with(['warning' => 'Data pengurus tidak ditemukan.']);
-        }
-        $management->delete();
-        // get user management
-        $user = $this->user->userGet($management->user_id);
-        // delete user
-        $user->deleted_by = auth()->user()->id ?? 1;
-        $user->deleted_at = date('Y-m-d H:i:s');
-        $user->username = base64_encode($user->username);
-        $user->email = base64_encode($user->email);
-        $user->update();
-        return redirect()->route('managementList')->with(['success' => 'Data pengurus berhasil dihapus.']);
     }
     /*
     * ========================================================================================== END MANAGEMENT ==========================================================================================
