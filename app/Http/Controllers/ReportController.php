@@ -32,8 +32,9 @@ class ReportController extends Controller
         $this->master = new MasterClass();
         $this->deposit = new DepositClass();
         $this->store = new StoreClass();
-        ini_set('memory_limit','1024M');
-        set_time_limit(0);
+        
+        ini_set('memory_limit','5524M');
+        set_time_limit(10000);
     }
 
 

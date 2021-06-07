@@ -53,7 +53,7 @@ class TrialBalanceExport implements FromArray, WithHeadings, WithEvents, ShouldA
                     $event->sheet->getStyle('A3')->applyFromArray($style['periode']);
                     $event->sheet->getStyle('A1:I3')->applyFromArray($style['border']);
 
-                    $i = count($this->data['data']) + 5;
+                    $i = count($this->data['data']) + 6;
                     $event->sheet->getStyle('A6')->applyFromArray($style['border']);
                     $event->sheet->duplicateStyle($event->sheet->getStyle('A6'), 'A4:I' . $i);
 
@@ -85,7 +85,7 @@ class TrialBalanceExport implements FromArray, WithHeadings, WithEvents, ShouldA
                     $event->sheet->getStyle('A3')->applyFromArray($style['periode']);
                     $event->sheet->getStyle('A1:H3')->applyFromArray($style['border']);
 
-                    $i = count($this->data['data']) + 5;
+                    $i = count($this->data['data']) + 6;
                     $event->sheet->getStyle('A6')->applyFromArray($style['border']);
                     $event->sheet->duplicateStyle($event->sheet->getStyle('A6'), 'A4:H' . $i);
 

@@ -21,6 +21,9 @@ class AccountancyController extends Controller
 
     public function __construct()
     {
+        ini_set('memory_limit','5524M');
+        set_time_limit(10000);
+        
         $this->middleware('auth');
         $this->middleware('role');
         Config::set('title', 'Pembukuan');
@@ -780,6 +783,9 @@ class AccountancyController extends Controller
     */
     public function ledger()
     {
+        ini_set('memory_limit','5524M');
+        set_time_limit(10000);
+        
         $data['start_date'] = config('config_apps.journal_periode_start');
         $data['end_date'] = config('config_apps.journal_periode_end');
         $data['data'] = $this->accountancy->ledger($data);

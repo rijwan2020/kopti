@@ -295,6 +295,9 @@ class AccountancyClass
         $start_periode = config('config_apps.journal_periode_start');
 
         $account = $this->accountList(['level' => 3, 'group_id' => $data['group_id'] ?? 'all']);
+        // if(isset($_GET['tes'])){
+        //     dd($account);
+        // }
 
         foreach ($account as $key => $value) {
             $jurnalPenyesuaian = $value->jurnalPenyesuaian->where('close_yearly_book_id', 0)->where('transaction_date', '>=', $data['start_date'] . ' 00:00:00')->where('transaction_date', '<=', $data['end_date'] . ' 23:59:59');
@@ -326,6 +329,7 @@ class AccountancyClass
                 $account[$key]['saldo_akhir'] = $account[$key]['saldo_awal'] + $jurnalTransaksi->sum('debit') - $jurnalTransaksi->sum('kredit');
                 $account[$key]['saldo_penyesuaian'] = $account[$key]['saldo_awal'] + $account[$key]['debit'] - $account[$key]['kredit'];
             }
+            
         }
         return $account;
     }
