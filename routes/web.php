@@ -342,11 +342,12 @@ Route::group(['prefix' => 'simpanan'], function () {
     });
     // ------------------------------------------------------------------------------------- JENIS SIMPANAN -------------------------------------------------------------------------------------
     Route::group(['prefix' => 'jenis'], function () {
-        Route::get('/', 'DepositController@depositTypeList')->name('depositTypeList');
-        Route::get('/tambah', 'DepositController@depositTypeAdd')->name('depositTypeAdd');
-        Route::get('/edit/{id}', 'DepositController@depositTypeEdit')->name('depositTypeEdit');
+        Route::get('/', 'SimpananJenisController@index')->name('depositTypeList');
+        Route::get('/tambah', 'SimpananJenisController@create')->name('depositTypeAdd');
+        Route::get('/edit/{id}', 'SimpananJenisController@edit')->name('depositTypeEdit');
+        Route::get('/hapus/{id}', 'SimpananJenisController@delete')->name('depositTypeDelete');
+        
         Route::post('/simpan', 'DepositController@depositTypeSave')->name('depositTypeSave');
-        Route::get('/hapus/{id}', 'DepositController@depositTypeDelete')->name('depositTypeDelete');
     });
     // ------------------------------------------------------------------------------------- DATA TRANSAKSI -------------------------------------------------------------------------------------
     Route::group(['prefix' => 'transaksi'], function () {

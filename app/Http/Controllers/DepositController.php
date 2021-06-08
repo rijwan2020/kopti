@@ -657,46 +657,6 @@ class DepositController extends Controller
     /*
     * ========================================================================================== START JENIS SIMPANAN ==========================================================================================
     */
-    public function depositTypeList()
-    {
-        $data['limit'] = $_GET['list'] ?? 25;
-        $data['q'] = $_GET['q'] ?? '';
-        $data['data'] = $this->deposit->depositTypeList($data, $data['limit']);
-        $data['active_menu'] = 'deposit-type';
-        $data['breadcrumb'] = [
-            'Simpanan' => route('depositList'),
-            'Jenis Simpanan' => url()->current()
-        ];
-        return view('deposit.deposit-type-list', compact('data'));
-    }
-    public function depositTypeAdd()
-    {
-        $data['mode'] = 'add';
-        $data['account'] = $this->accountancy->accountList(['level' => 2]);
-        $data['group'] = $this->accountancy->accountGroupList();
-        $data['active_menu'] = 'deposit-type';
-        $data['breadcrumb'] = [
-            'Simpanan' => route('depositList'),
-            'Jenis Simpanan' => route('depositTypeList'),
-            'Tambah' => url()->current()
-        ];
-        return view('deposit.deposit-type-form', compact('data'));
-    }
-    public function depositTypeEdit($id)
-    {
-        $data['data'] = $this->deposit->depositTypeGet($id);
-        if ($data['data'] == false) {
-            return redirect()->route('depositTypeList')->with(['warning' => 'Data jenis simpanan tidak ditemukan.']);
-        }
-        $data['mode'] = 'edit';
-        $data['active_menu'] = 'deposit-type';
-        $data['breadcrumb'] = [
-            'Simpanan' => route('depositList'),
-            'Jenis Simpanan' => route('depositTypeList'),
-            'Edit: ' . $data['data']->name => url()->current()
-        ];
-        return view('deposit.deposit-type-form', compact('data'));
-    }
     public function depositTypeSave(DepositTypeRequest $request)
     {
         $data = $request->validated();
@@ -719,24 +679,6 @@ class DepositController extends Controller
             $message = 'Data jenis simpanan berhasil diperbaharui.';
         }
         return redirect()->route('depositTypeList')->with(['success' => $message]);
-    }
-    public function depositTypeDelete($id)
-    {
-        $depositType = $this->deposit->depositTypeGet($id);
-        if ($depositType == false) {
-            return redirect()->route('depositTypeList')->with(['warning' => 'Data jenis simpanan tidak ditemukan.']);
-        }
-        // cek simpanan
-        // disini
-        $account = $this->accountancy->accountGet(['code', $depositType->account_code]);
-        if ($account) {
-            if ($account->end_balance > 0 || $account->start_balance > 0) {
-                return redirect()->route('depositTypeList')->with(['warning' => 'Data jenis simpanan tidak dapat dihapus.']);
-            }
-            $account->delete();
-        }
-        $depositType->delete();
-        return redirect()->route('depositTypeList')->with(['success' => 'Data jenis simpanan berhasil dihapus.']);
     }
     /*
     * ========================================================================================== END JENIS SIMPANAN ==========================================================================================
