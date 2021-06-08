@@ -249,12 +249,12 @@ Route::group(['prefix' => 'tutupbuku'], function () {
 */
 // ------------------------------------------------------------------------------------- NERACA -------------------------------------------------------------------------------------
 Route::group(['prefix' => 'neraca'], function () {
-    Route::get('/', 'ReportController@balance')->name('balance');
-    Route::get('/cetak', 'ReportController@balancePrint')->name('balancePrint');
-    Route::get('/download', 'ReportController@balanceDownload')->name('balanceDownload');
-    Route::get('/penjelasan', 'ReportController@balanceDescription')->name('balanceDescription');
-    Route::get('/penjelasan/print', 'ReportController@balanceDescriptionPrint')->name('balanceDescriptionPrint');
-    Route::get('/penjelasan/download', 'ReportController@balanceDescriptionDownload')->name('balanceDescriptionDownload');
+    Route::get('/', 'NeracaController@index')->name('balance');
+    Route::get('/cetak', 'NeracaController@print')->name('balancePrint');
+    Route::get('/download', 'NeracaController@download')->name('balanceDownload');
+    Route::get('/penjelasan', 'NeracaController@penjelasan')->name('balanceDescription');
+    Route::get('/penjelasan/print', 'NeracaController@penjelasanPrint')->name('balanceDescriptionPrint');
+    Route::get('/penjelasan/download', 'NeracaController@penjelasanDownload')->name('balanceDescriptionDownload');
 });
 // ------------------------------------------------------------------------------------- PHU -------------------------------------------------------------------------------------
 Route::group(['prefix' => 'phu'], function () {

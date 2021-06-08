@@ -42,6 +42,7 @@ class ReportController extends Controller
     /*
     * ========================================================================================== START NERACA ==========================================================================================
     */
+    /*
     public function balance()
     {
         $data['start_date'] = $_GET['start_date'] ?? config('config_apps.journal_periode_start');
@@ -1609,7 +1610,7 @@ class ReportController extends Controller
             }
         }
         return Excel::download(new BalanceDescriptionExport($export), 'Penjelasan Neraca per ' . date('d M Y', strtotime($data['end_date'])) . '.xlsx');
-    }
+    }*/
     /*
     * ========================================================================================== START NERACA ==========================================================================================
     */
