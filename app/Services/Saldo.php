@@ -23,6 +23,8 @@ class Saldo
         if(isset($data['group_id']) && $data['group_id'] != 'all'){
             $filterAkun['group_id'] = $data['group_id'];
         }
+        $filterAkun['order_by'] = 'code';
+        $filterAkun['sort'] = 'asc';
 
         $akun = $this->akun->list($filterAkun);
         

@@ -212,9 +212,9 @@ Route::group(['prefix' => 'jurnal/penyesuaian'], function () {
 });
 // ------------------------------------------------------------------------------------- NERACA SALDO -------------------------------------------------------------------------------------
 Route::group(['prefix' => 'neracasaldo'], function () {
-    Route::get('/', 'AccountancyController@trialBalance')->name('trialBalance');
-    Route::get('/cetak', 'AccountancyController@trialBalancePrint')->name('trialBalancePrint');
-    Route::get('/download', 'AccountancyController@trialBalanceDownload')->name('trialBalanceDownload');
+    Route::get('/', 'NeracaSaldoController@index')->name('trialBalance');
+    Route::get('/cetak', 'NeracaSaldoController@print')->name('trialBalancePrint');
+    Route::get('/download', 'NeracaSaldoController@download')->name('trialBalanceDownload');
 });
 // ------------------------------------------------------------------------------------- TUTUP BUKU -------------------------------------------------------------------------------------
 Route::group(['prefix' => 'tutupbuku'], function () {
@@ -258,9 +258,9 @@ Route::group(['prefix' => 'neraca'], function () {
 });
 // ------------------------------------------------------------------------------------- PHU -------------------------------------------------------------------------------------
 Route::group(['prefix' => 'phu'], function () {
-    Route::get('/', 'ReportController@phu')->name('phu');
-    Route::get('/cetak', 'ReportController@phuPrint')->name('phuPrint');
-    Route::get('/download', 'ReportController@phuDownload')->name('phuDownload');
+    Route::get('/', 'PhuController@index')->name('phu');
+    Route::get('/cetak', 'PhuController@print')->name('phuPrint');
+    Route::get('/download', 'PhuController@download')->name('phuDownload');
 });
 // ------------------------------------------------------------------------------------- SHU -------------------------------------------------------------------------------------
 Route::group(['prefix' => 'shu'], function () {
