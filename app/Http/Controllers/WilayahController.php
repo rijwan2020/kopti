@@ -22,7 +22,7 @@ class WilayahController extends Controller
     public function index()
     {
         $data['q'] = $_GET['q'] ?? '';
-        $data['limit'] = $_GET['limit'] ?? 25;
+        $data['limit'] = $_GET['limit'] ?? 10;
 
         $data['data'] = $this->wilayah->list($data);
         $data['active_menu'] = 'region';

@@ -70,27 +70,28 @@ Route::group(["prefix" => "pengurus"], function () {
     Route::post('/simpan', 'MasterController@managementSave')->name('managementSave');
     // ------------------------------------------------------------------------------------- DATA JABATAN PENGURUS -------------------------------------------------------------------------------------
     Route::group(["prefix" => "/jabatan"], function () {
-        Route::get('/', 'MasterController@managementPositionList')->name('managementPositionList');
-        Route::get('/tambah', 'MasterController@managementPositionAdd')->name('managementPositionAdd');
-        Route::get('/edit/{id}', 'MasterController@managementPositionEdit')->name('managementPositionEdit');
-        Route::post('/simpan', 'MasterController@managementPositionSave')->name('managementPositionSave');
-        Route::get('/hapus/{id}', 'MasterController@managementPositionDelete')->name('managementPositionDelete');
+        Route::get('/', 'PosisiController@jabatan')->name('managementPositionList');
+        Route::get('/tambah', 'PosisiController@jabatanAdd')->name('managementPositionAdd');
+        Route::get('/edit/{id}', 'PosisiController@jabatanEdit')->name('managementPositionEdit');
+        Route::get('/hapus/{id}', 'PosisiController@jabatanDelete')->name('managementPositionDelete');
+        Route::post('/simpan', 'PosisiController@jabatanSave')->name('managementPositionSave');
     });
 });
 // ------------------------------------------------------------------------------------- DATA KARYAWAN -------------------------------------------------------------------------------------
 Route::group(["prefix" => "karyawan"], function () {
-    Route::get('/', 'MasterController@employeeList')->name('employeeList');
-    Route::get('/tambah', 'MasterController@employeeAdd')->name('employeeAdd');
-    Route::get('/edit/{id}', 'MasterController@employeeEdit')->name('employeeEdit');
+    Route::get('/', 'KaryawanController@index')->name('employeeList');
+    Route::get('/tambah', 'KaryawanController@create')->name('employeeAdd');
+    Route::get('/edit/{id}', 'KaryawanController@edit')->name('employeeEdit');
+    Route::get('/hapus/{id}', 'KaryawanController@delete')->name('employeeDelete');
+
     Route::post('/simpan', 'MasterController@employeeSave')->name('employeeSave');
-    Route::get('/hapus/{id}', 'MasterController@employeeDelete')->name('employeeDelete');
     // ------------------------------------------------------------------------------------- DATA POSISI KARYAWAN -------------------------------------------------------------------------------------
     Route::group(["prefix" => "/posisi"], function () {
-        Route::get('/', 'MasterController@employeePositionList')->name('employeePositionList');
-        Route::get('/tambah', 'MasterController@employeePositionAdd')->name('employeePositionAdd');
-        Route::get('/edit/{id}', 'MasterController@employeePositionEdit')->name('employeePositionEdit');
-        Route::post('/simpan', 'MasterController@employeePositionSave')->name('employeePositionSave');
-        Route::get('/hapus/{id}', 'MasterController@employeePositionDelete')->name('employeePositionDelete');
+        Route::get('/', 'PosisiController@index')->name('employeePositionList');
+        Route::get('/tambah', 'PosisiController@add')->name('employeePositionAdd');
+        Route::get('/edit/{id}', 'PosisiController@edit')->name('employeePositionEdit');
+        Route::post('/simpan', 'PosisiController@save')->name('employeePositionSave');
+        Route::get('/hapus/{id}', 'PosisiController@delete')->name('employeePositionDelete');
     });
 });
 // ------------------------------------------------------------------------------------- DATA WILAYAH -------------------------------------------------------------------------------------
@@ -119,8 +120,8 @@ Route::group(['prefix' => 'aset'], function () {
 });
 // ------------------------------------------------------------------------------------- KONFIGURASI APLIKASI -------------------------------------------------------------------------------------
 Route::group(['prefix' => 'konfigurasi'], function () {
-    Route::get('/', 'MasterController@configApps')->name('configApps');
-    Route::post('/update', 'MasterController@configAppsUpdate')->name('configAppsUpdate');
+    Route::get('/', 'KonfigurasiAplikasiController@index')->name('configApps');
+    Route::post('/update', 'KonfigurasiAplikasiController@update')->name('configAppsUpdate');
 });
 /*
 * ======================================================================================== DATA MASTER ========================================================================================

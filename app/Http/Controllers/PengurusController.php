@@ -30,7 +30,7 @@ class PengurusController extends Controller
     public function index()
     {
         $data['q'] = $_GET['q'] ?? '';
-        $data['limit'] = $_GET['limit'] ?? 25;
+        $data['limit'] = $_GET['limit'] ?? 10;
         $data['position_id'] = $_GET['position_id'] ?? 'all';
 
         $filter = [
@@ -40,6 +40,7 @@ class PengurusController extends Controller
         if($data['position_id'] != 'all'){
             $filter['position_id'] = $data['position_id'];
         }
+        $filter['relations'] = ['user', 'member', 'position'];
         $data['data'] = $this->pengurus->list($filter);
         $data['position'] = $this->posisi->list(['type' => 0]);
         $data['active_menu'] = 'management';

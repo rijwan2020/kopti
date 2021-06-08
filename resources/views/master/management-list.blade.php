@@ -8,11 +8,10 @@
         <div class="col-md-1 mb-3">
             <label class="form-label">Limit</label>
             <select class="select2 form-control" name="limit">
+                <option value="10" {{$data['limit'] == 10?'selected':''}}>10</option>
                 <option value="25" {{$data['limit'] == 25?'selected':''}}>25</option>
                 <option value="50" {{$data['limit'] == 50?'selected':''}}>50</option>
                 <option value="100" {{$data['limit'] == 100?'selected':''}}>100</option>
-                <option value="150" {{$data['limit'] == 150?'selected':''}}>150</option>
-                <option value="200" {{$data['limit'] == 200?'selected':''}}>200</option>
             </select>
         </div>
         <div class="col-md-2 mb-3">
