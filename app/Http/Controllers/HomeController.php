@@ -7,6 +7,7 @@ use App\Classes\AreaClass;
 use App\Classes\DepositClass;
 use App\Classes\MasterClass;
 use App\Classes\StoreClass;
+use App\Services\Saldo;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -16,15 +17,17 @@ class HomeController extends Controller
      *
      * @return void
      */
-    private $store, $deposit, $master, $area, $pembukuan;
-    public function __construct()
-    {
+    private $store, $deposit, $master, $area, $pembukuan, $saldo;
+    public function __construct(
+        Saldo $saldo
+    ){
         $this->middleware('auth');
         $this->area = new AreaClass();
         $this->master = new MasterClass();
         $this->deposit = new DepositClass();
         $this->store = new StoreClass();
         $this->pembukuan = new AccountancyClass();
+        $this->saldo = $saldo;
     }
 
     /**
@@ -64,17 +67,14 @@ class HomeController extends Controller
         $data['penambahan'] = $this->store->itemPenambahan(['start_date' => $data['config']['journal_periode_start'], 'end_date' => $data['config']['journal_periode_end']]);
         $data['pengurangan'] = $this->store->itemPengurangan(['start_date' => $data['config']['journal_periode_start'], 'end_date' => $data['config']['journal_periode_end']]);
 
-        /*$akun = $this->pembukuan->ledger([
+        $akun = $this->saldo->saldo([
             'start_date' => $data['config']['journal_periode_start'],
             'end_date' => $data['config']['journal_periode_end'],
             'view' => 'all'
         ]);
-        if(auth()->user()->id == 1){
-            dd($data);
-        }*/
         $pendapatan = $beban = $shu = 0;
         $pendapatan_lalu = $beban_lalu = $shu_lalu = 0;
-        /*foreach ($akun as $key => $value) {
+        foreach ($akun as $key => $value) {
             if ($value['code'][1] == 4) {
                 if ($value['type'] == 1) {
                     $pendapatan += $value['adjusting_balance'];
@@ -97,7 +97,7 @@ class HomeController extends Controller
                 $shu = $value['adjusting_balance'];
                 $shu_lalu = $value['saldo_tahun_lalu'];
             }
-        }*/
+        }
         $total_shu = $shu + $pendapatan - $beban;
         $data['shu'] = $total_shu - (2.5 * $total_shu / 100);
         $total_shu_lalu = $shu_lalu + $pendapatan_lalu - $beban_lalu;

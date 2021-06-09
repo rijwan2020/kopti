@@ -314,14 +314,15 @@ Route::group(['prefix' => 'laporan/harian'], function () {
 */
 Route::group(['prefix' => 'simpanan'], function () {
     // ------------------------------------------------------------------------------------- DATA SIMPANAN -------------------------------------------------------------------------------------
-    Route::get('/', 'DepositController@depositList')->name('depositList');
-    Route::get('/tambah', 'DepositController@depositAdd')->name('depositAdd');
+    Route::get('/', 'SimpananController@index')->name('depositList');
+    Route::get('/tambah', 'SimpananController@create')->name('depositAdd');
+    Route::get('/cetak', 'SimpananController@print')->name('depositPrintAll');
+    Route::get('/download', 'SimpananController@download')->name('depositDownload');
+    Route::get('/hapus/{id}', 'SimpananController@delete')->name('depositDelete');
+    Route::get('/upload', 'SimpananController@upload')->name('depositUpload');
+
     Route::post('/simpan', 'DepositController@depositSave')->name('depositSave');
-    Route::get('/cetak', 'DepositController@depositPrintAll')->name('depositPrintAll');
-    Route::get('/download', 'DepositController@depositDownload')->name('depositDownload');
-    Route::get('/hapus/{id}', 'DepositController@depositDelete')->name('depositDelete');
     Route::post('/hapus/{id}/confirm', 'DepositController@depositDeleteConfirm')->name('depositDeleteConfirm');
-    Route::get('/upload', 'DepositController@depositUpload')->name('depositUpload');
     Route::post('/upload/simpan', 'DepositController@depositUploadSave')->name('depositUploadSave');
     // ------------------------------------------------------------------------------------- DETAIL SIMPANAN -------------------------------------------------------------------------------------
     Route::group(['prefix' => 'detail'], function () {

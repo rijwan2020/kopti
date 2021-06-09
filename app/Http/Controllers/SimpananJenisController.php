@@ -20,7 +20,7 @@ class SimpananJenisController extends Controller
     ){
         $this->middleware('auth');
         $this->middleware('role');
-        Config::set('title', 'Data Master');
+        Config::set('title', 'Unit Simpanan');
         $this->jenis = $jenis;
         $this->akun = $akun;
         $this->akungrup = $akungrup;

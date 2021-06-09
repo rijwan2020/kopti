@@ -43,6 +43,7 @@ class DepositController extends Controller
     /*
     * ========================================================================================== START SIMPANAN ==========================================================================================
     */
+    /*
     public function depositList()
     {
         $data['limit'] = $_GET['limit'] ?? 20;
@@ -76,6 +77,79 @@ class DepositController extends Controller
         ];
         return view('deposit.deposit-form', compact('data'));
     }
+    public function depositPrintAll()
+    {
+        $data['q'] = $_GET['q'] ?? '';
+        $data['type_id'] = $_GET['type_id'] ?? 'all';
+        $data['data'] = $this->deposit->depositList($data);
+        $data['assignment'] = $this->master->pengurusAssignment();
+        return view('deposit.deposit-print-all', compact('data'));
+    }
+    public function depositDownload()
+    {
+        $data['q'] = $_GET['q'] ?? '';
+        $data['type_id'] = $_GET['type_id'] ?? 'all';
+        $data['data'] = $this->deposit->depositList($data);
+        $export['data'] = [];
+        $i = 0;
+        foreach ($data['data'] as $key => $value) {
+            $i++;
+            $export['data'][$key]['no'] = $i;
+            $export['data'][$key]['kode'] = $value->member->code;
+            $export['data'][$key]['nama'] = $value->member->name;
+            $export['data'][$key]['no_rek'] = $value->account_number;
+            $export['data'][$key]['wilayah'] = $value->region->name;
+            $export['data'][$key]['jenis'] = $value->type->name;
+            $export['data'][$key]['tgl_reg'] = $value->registration_date;
+            $export['data'][$key]['last_trx'] = $value->last_transaction;
+            $export['data'][$key]['saldo'] = 'Rp' . number_format($value->balance, 2, ',', '.');
+        }
+        $export['total_row'] = $data['data']->count();
+        $export['saldo'] = $data['data']->sum('balance');
+        return Excel::download(new DepositExport($export), 'Data Simpanan.xlsx');
+    }
+    
+    public function depositDelete($id)
+    {
+        $data['data'] = $this->deposit->depositGet($id);
+        if ($data['data'] == false) {
+            return redirect()->route('depositList')->with(['warning' => 'Data simpanan tidak ditemukan.']);
+        }
+        if ($data['data']->deleted_by != 0) {
+            return redirect()->route('depositList')->with(['warning' => 'Data simpanan tidak ditemukan.']);
+        }
+        $data['cash'] = $this->accountancy->accountList(['group_id' => 1]);
+        $data['active_menu'] = 'deposit';
+        $data['breadcrumb'] = [
+            'Simpanan' => route('depositList'),
+            'Hapus' => url()->current()
+        ];
+        return view('deposit.deposit-delete', compact('data'));
+    }
+    
+    public function depositUpload()
+    {
+        $data['limit'] = $_GET['limit'] ?? 25;
+        $data['q'] = $_GET['q'] ?? '';
+        $data['data'] = $this->deposit->depositUploadList($data, $data['limit']);
+        $data['type'] = $this->deposit->depositTypeList();
+        $data['cash'] = $this->accountancy->accountList(['group_id' => 1]);
+        $data['active_menu'] = 'deposit';
+        $data['breadcrumb'] = [
+            'Simpanan' => route('depositList'),
+            'Upload' => url()->current()
+        ];
+        if (isset($_GET['confirm'])) {
+            $this->deposit->depositUploadConfirm($_GET['confirm']);
+            if ($_GET['confirm'] == 0) {
+                return redirect()->route('depositUpload')->with(['info' => 'Upload data simpanan dibatalkan.']);
+            } else {
+                return redirect()->route('depositList')->with(['success' => 'Upload data simpanan berhasil.']);
+            }
+        }
+        return view('deposit.deposit-upload', compact('data'));
+    }
+    */
     public function depositSave(DepositRequest $request)
     {
         $data = $request->validated();
@@ -110,54 +184,7 @@ class DepositController extends Controller
         }
         return redirect()->route('depositList')->with(['success' => $message]);
     }
-    public function depositPrintAll()
-    {
-        $data['q'] = $_GET['q'] ?? '';
-        $data['type_id'] = $_GET['type_id'] ?? 'all';
-        $data['data'] = $this->deposit->depositList($data);
-        $data['assignment'] = $this->master->pengurusAssignment();
-        return view('deposit.deposit-print-all', compact('data'));
-    }
-    public function depositDownload()
-    {
-        $data['q'] = $_GET['q'] ?? '';
-        $data['type_id'] = $_GET['type_id'] ?? 'all';
-        $data['data'] = $this->deposit->depositList($data);
-        $export['data'] = [];
-        $i = 0;
-        foreach ($data['data'] as $key => $value) {
-            $i++;
-            $export['data'][$key]['no'] = $i;
-            $export['data'][$key]['kode'] = $value->member->code;
-            $export['data'][$key]['nama'] = $value->member->name;
-            $export['data'][$key]['no_rek'] = $value->account_number;
-            $export['data'][$key]['wilayah'] = $value->region->name;
-            $export['data'][$key]['jenis'] = $value->type->name;
-            $export['data'][$key]['tgl_reg'] = $value->registration_date;
-            $export['data'][$key]['last_trx'] = $value->last_transaction;
-            $export['data'][$key]['saldo'] = 'Rp' . number_format($value->balance, 2, ',', '.');
-        }
-        $export['total_row'] = $data['data']->count();
-        $export['saldo'] = $data['data']->sum('balance');
-        return Excel::download(new DepositExport($export), 'Data Simpanan.xlsx');
-    }
-    public function depositDelete($id)
-    {
-        $data['data'] = $this->deposit->depositGet($id);
-        if ($data['data'] == false) {
-            return redirect()->route('depositList')->with(['warning' => 'Data simpanan tidak ditemukan.']);
-        }
-        if ($data['data']->deleted_by != 0) {
-            return redirect()->route('depositList')->with(['warning' => 'Data simpanan tidak ditemukan.']);
-        }
-        $data['cash'] = $this->accountancy->accountList(['group_id' => 1]);
-        $data['active_menu'] = 'deposit';
-        $data['breadcrumb'] = [
-            'Simpanan' => route('depositList'),
-            'Hapus' => url()->current()
-        ];
-        return view('deposit.deposit-delete', compact('data'));
-    }
+    
     public function depositDeleteConfirm(Request $request)
     {
         $data = $request->validate([
@@ -190,28 +217,7 @@ class DepositController extends Controller
         $this->deposit->depositDelete($data['deposit_id'], $data['transaction_date']);
         return redirect()->route('depositList')->with(['success' => 'Data simpanan berhasil dihapus.']);
     }
-    public function depositUpload()
-    {
-        $data['limit'] = $_GET['limit'] ?? 25;
-        $data['q'] = $_GET['q'] ?? '';
-        $data['data'] = $this->deposit->depositUploadList($data, $data['limit']);
-        $data['type'] = $this->deposit->depositTypeList();
-        $data['cash'] = $this->accountancy->accountList(['group_id' => 1]);
-        $data['active_menu'] = 'deposit';
-        $data['breadcrumb'] = [
-            'Simpanan' => route('depositList'),
-            'Upload' => url()->current()
-        ];
-        if (isset($_GET['confirm'])) {
-            $this->deposit->depositUploadConfirm($_GET['confirm']);
-            if ($_GET['confirm'] == 0) {
-                return redirect()->route('depositUpload')->with(['info' => 'Upload data simpanan dibatalkan.']);
-            } else {
-                return redirect()->route('depositList')->with(['success' => 'Upload data simpanan berhasil.']);
-            }
-        }
-        return view('deposit.deposit-upload', compact('data'));
-    }
+    
     public function depositUploadSave(Request $request)
     {
         $data = $request->validate([
