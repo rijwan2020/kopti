@@ -28,6 +28,8 @@ class NeracaSaldoController extends Controller
         $this->tahunan = $tahunan;
         $this->pengurus = $pengurus;
         Config::set('title', 'Laporan');
+        $this->middleware('auth');
+        $this->middleware('role');
     }
 
     public function index()
