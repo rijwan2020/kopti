@@ -231,6 +231,7 @@ class DepositController extends Controller
         Excel::import(new DepositImport($data), $file);
         return redirect()->route('depositUpload')->with(['info' => 'Pastikan data telah sesuai, lalu klik tombol konfirmasi.']);
     }
+    /*
     public function depositDetail($id)
     {
         $data['deposit'] = $this->deposit->depositGet($id);
@@ -319,14 +320,6 @@ class DepositController extends Controller
         ];
         return view('deposit.deposit-detail-preview', compact('data'));
     }
-    public function depositDetailSave(DepositTransactionRequest $request)
-    {
-        $data = $request->validated();
-        if (!$this->deposit->depositTransactionSave($data)) {
-            return redirect()->route('depositDetailAdd', ['id' => $data['deposit_id']])->with(['warning' => $this->deposit->error]);
-        }
-        return redirect()->route('depositDetail', ['id' => $data['deposit_id']])->with(['success' => 'Transaksi Sukses.']);
-    }
     public function depositDetailPrint($id)
     {
         $data['deposit'] = $this->deposit->depositGet($id);
@@ -349,6 +342,7 @@ class DepositController extends Controller
         $data['assignment'] = $this->master->pengurusAssignment();
         return view('deposit.deposit-detail-print', compact('data'));
     }
+    
     public function depositDetailDownload($id)
     {
         $data['deposit'] = $this->deposit->depositGet($id);
@@ -392,6 +386,17 @@ class DepositController extends Controller
         }
         $export['total_row'] = $data['data']->count();
         return Excel::download(new DepositDetailExport($export), 'Data Transaksi ' . $data['deposit']->account_number . '.xlsx');
+    }
+    */
+    
+    
+    public function depositDetailSave(DepositTransactionRequest $request)
+    {
+        $data = $request->validated();
+        if (!$this->deposit->depositTransactionSave($data)) {
+            return redirect()->route('depositDetailAdd', ['id' => $data['deposit_id']])->with(['warning' => $this->deposit->error]);
+        }
+        return redirect()->route('depositDetail', ['id' => $data['deposit_id']])->with(['success' => 'Transaksi Sukses.']);
     }
     public function depositBook($id)
     {

@@ -326,12 +326,13 @@ Route::group(['prefix' => 'simpanan'], function () {
     Route::post('/upload/simpan', 'DepositController@depositUploadSave')->name('depositUploadSave');
     // ------------------------------------------------------------------------------------- DETAIL SIMPANAN -------------------------------------------------------------------------------------
     Route::group(['prefix' => 'detail'], function () {
-        Route::get('/{id}', 'DepositController@depositDetail')->name('depositDetail');
-        Route::get('/{id}/tambah', 'DepositController@depositDetailAdd')->name('depositDetailAdd');
-        Route::post('/{id}/preview', 'DepositController@depositDetailPreview')->name('depositDetailPreview');
+        Route::get('/{id}', 'SimpananDetailController@index')->name('depositDetail');
+        Route::get('/{id}/tambah', 'SimpananDetailController@create')->name('depositDetailAdd');
+        Route::post('/{id}/preview', 'SimpananDetailController@preview')->name('depositDetailPreview');
+        Route::get('/{id}/print', 'SimpananDetailController@print')->name('depositDetailPrint');
+        Route::get('/{id}/download', 'SimpananDetailController@download')->name('depositDetailDownload');
+        
         Route::post('/{id}/simpan', 'DepositController@depositDetailSave')->name('depositDetailSave');
-        Route::get('/{id}/print', 'DepositController@depositDetailPrint')->name('depositDetailPrint');
-        Route::get('/{id}/download', 'DepositController@depositDetailDownload')->name('depositDetailDownload');
     });
     // ------------------------------------------------------------------------------------- BUKU TABUNGAN -------------------------------------------------------------------------------------
     Route::group(['prefix' => 'buku'], function () {
