@@ -53,10 +53,10 @@ class Saldo
 
         foreach ($akun as $key => $value) {
             $akun[$key]['saldo_awal'] = $value->beginning_balance;
-            if(isset($saldoJurnalPenyesuaian[$value->code])){
-                $akun[$key]['debit'] = $saldoJurnalPenyesuaian[$value->code]['debit'];
-                $akun[$key]['kredit'] = $saldoJurnalPenyesuaian[$value->code]['kredit'];
-            }
+            // if(isset($saldoJurnalPenyesuaian[$value->code])){
+                $akun[$key]['debit'] = $saldoJurnalPenyesuaian[$value->code]['debit'] ?? 0;
+                $akun[$key]['kredit'] = $saldoJurnalPenyesuaian[$value->code]['kredit'] ?? 0;
+            // }
             if ($data['start_date'] > $start_periode) {
                 if(isset($saldoAwal[$value->code])){
                     if($value->type){
