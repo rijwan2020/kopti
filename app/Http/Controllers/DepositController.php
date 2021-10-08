@@ -1094,7 +1094,8 @@ class DepositController extends Controller
                 'type_id' => $data['type_id']
             ];
             $saldo_awal = $this->deposit->depositTransactionSum($filter_awal);
-            $export['data'][$no]['saldo_awal'] = number_format($saldo_awal['kredit'] - $saldo_awal['debit'], 2, ',', '.');
+
+            $export['data'][$no]['saldo_awal'] = $saldo_awal['kredit'] - $saldo_awal['debit'];
             $total_saldo_awal += ($saldo_awal['kredit'] - $saldo_awal['debit']);
 
             $filter['type'] = 'all';
@@ -1104,13 +1105,20 @@ class DepositController extends Controller
             $jasa = $this->deposit->depositTransactionSum($filter);
 
 
-            $export['data'][$no]['kredit'] = number_format($transaction['kredit'] - $jasa['kredit'], 2, ',', '.');
-            $export['data'][$no]['debit'] = number_format($transaction['debit'] - $jasa['debit'], 2, ',', '.');
-            $export['data'][$no]['jasa'] = number_format($jasa['kredit'] - $jasa['debit'], 2, ',', '.');
-            $export['data'][$no]['total'] = number_format($transaction['kredit'] - $transaction['debit'], 2, ',', '.');
+            $export['data'][$no]['kredit'] = $transaction['kredit'] - $jasa['kredit'];
+            $export['data'][$no]['debit'] = $transaction['debit'] - $jasa['debit'];
+            $export['data'][$no]['jasa'] = $jasa['kredit'] - $jasa['debit'];
+            $export['data'][$no]['total'] = $export['data'][$no]['saldo_awal'] + $export['data'][$no]['kredit'] - $export['data'][$no]['debit'] + $export['data'][$no]['jasa'];
             $total_kredit += ($transaction['kredit'] - $jasa['kredit']);
             $total_debit += ($transaction['debit'] - $jasa['debit']);
             $total_jasa += ($jasa['kredit'] - $jasa['debit']);
+
+
+            $export['data'][$no]['saldo_awal'] = number_format($export['data'][$no]['saldo_awal'], 2, ',', '.');
+            $export['data'][$no]['kredit'] = number_format($export['data'][$no]['kredit'], 2, ',', '.');
+            $export['data'][$no]['debit'] = number_format($export['data'][$no]['debit'], 2, ',', '.');
+            $export['data'][$no]['jasa'] = number_format($export['data'][$no]['jasa'], 2, ',', '.');
+            $export['data'][$no]['total'] = number_format($export['data'][$no]['total'], 2, ',', '.');
         }
         $saldo = $total_saldo_awal + $total_kredit - $total_debit + $total_jasa;
         $export['data'][++$no] = [
